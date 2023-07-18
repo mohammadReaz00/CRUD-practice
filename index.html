@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/milligram.css" />
+  <title>Document</title>
+</head>
+
+<body>
+
+
+  <!-- Create Mew -->
+
+  <div>
+    <a href="create.html" class="button">Create New</a>
+  </div>
+
+  <!-- Table -->
+  <table>
+    <thead>
+      <tr>
+        <td>Product Name</td>
+        <td>Product Code</td>
+        <td>Unit Price</td>
+        <td>Qty</td>
+        <td>Total Price</td>
+        <td>Delete</td>
+        <td>Update</td>
+      </tr>
+    <tbody id=itemList>
+    </tbody>
+    </thead>
+  </table>
+
+  <!-- JavaScript -->
+  <script src="js/axios.min.js"></script>
+
+  <script>
+    async function getList() {
+      let URL = "https://crud.teamrabbil.com/api/v1/ReadProduct"
+      let res = await axios.get(URL);
+      if (res.status === 200) {
+        let list = res.data['data'];
+        list.forEach((item) => {
+          document.getElementById('itemList').innerHTML += (
+            `<tr>
+                 <td>${item['ProductName']}</td>
+                 <td>${item['ProductCode']}</td>
+                 <td>${item['UnitPrice']}</td>
+                 <td>${item['Qty']}</td>
+                 <td>${item['TotalPrice']}</td>
+                 <td><button onclick="deleteItem('${item['_id']}')">Delete</button></td>
+                 <td><button onclick="updateItem('${item['_id']}')">Update</button></td>
+            </tr>
+            `
+          )
+        })
+      }
+      else {
+        alert("Wrong")
+      }
+    }
+
+
+    getList();
+
+
+    async function deleteItem(id) {
+      let res = await axios.get(`https://crud.teamrabbil.com/api/v1/DeleteProduct/${id}`)
+
+      if (res.status == 200) {
+        document.getElementById('itemList').innerHTML = "";
+        getList();
+      } else {
+        alert("error");
+      }
+
+    }
+
+    async function updateItem(id) {
+      window.location = `update.html?id=${id}`
+    }
+
+
+
+  </script>
+</body>
+
+</html>
